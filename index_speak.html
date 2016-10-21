@@ -59,10 +59,11 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div id="textOutput">
-              Welcome to the Condescending CS Student Simulator. Click the "Generate" button below to be talked down to!
+              Welcome to the Condescending CS Student Simulator. Click the "Generate" button below to be talked down to, or the "Speak" button below in a compatible browser to be talked down to aloud!
             </div>
             <div id="controlPanel" class="my-panel">
               <button id="generateButton" class="btn btn-primary">Generate</button>
+              <button id="speakButton" class="btn btn-success disabled">Speak</button>
             </div>
           </div>
         </div>
@@ -77,16 +78,41 @@
     <script language="javascript" type="text/javascript" src="libraries/jquery.min.js"></script>
     <script src="libraries/bootstrap/js/bootstrap.js"></script>
 
+    <script language="javascript" type="text/javascript" src="libraries/p5.min.js"></script>
+    <script language="javascript" type="text/javascript" src="libraries/p5.dom.js"></script>
+    <script language="javascript" type="text/javascript" src="libraries/p5.speech.js"></script>
+    <script language="javascript" type="text/javascript" src="libraries/p5.sound.js"></script>
     <script language="javascript" type="text/javascript" src="libraries/seedrandom.js"></script>
     <script language="javascript" type="text/javascript" src="grammar.js"></script>
     <script defer language="javascript" type="text/javascript" src="libraries/tracery.js"></script>
 
     <script language="javascript" type="text/javascript">
+    	var myVoice = new p5.Speech(); // new P5.Speech object
+      readyToSpeak = false;
+      myVoice.onLoad = function() {
+        $("#speakButton").removeClass("disabled");
+        readyToSpeak = true;
+      }
+      myVoice.listVoices();
       Math.seedrandom(Date.now());
 
       $("#generateButton").click(function() {
+        if (!readyToSpeak) {
+          return;
+        }
         var mansplaination = simulateThatGuy();
         $("#textOutput").text(mansplaination);
+      })
+
+      $("#speakButton").click(function() {
+        if (!readyToSpeak) {
+          return;
+        }
+        var mansplaination = simulateThatGuy();
+        $("#textOutput").text(mansplaination);
+
+        myVoice.setVoice("Google UK English Male");
+        myVoice.speak(mansplaination);
       })
 
     </script>
